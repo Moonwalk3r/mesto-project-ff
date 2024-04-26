@@ -1,0 +1,24 @@
+.profile__image {
+  width: 120px;
+  height: 120px;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  border-radius: 50%;
+  background-size: cover;
+  /*Ковер тут симпатичнее контейна*/
+  background-position: center;
+  margin: 0 29px 0 0;
+  /*Макет очень кривоват, как считать этот отступ я хз. Проявите тут лояльность пока что*/
+}
+
+@media screen and (max-width: 740px) {
+  .profile__image {
+    margin: 0 10px 0 0;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .profile__image {
+    margin-right: 0;
+  }
+}
