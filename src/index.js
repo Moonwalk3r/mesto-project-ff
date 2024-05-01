@@ -32,9 +32,9 @@ function handleEditButtonClick() {
 // создание новой карточки
 const popupNewCard = document.querySelector('.popup_type_new-card');
 const buttonAdd = document.querySelector('.profile__add-button');
-const formEditProfileCard = popupNewCard.querySelector('.popup__form');
-const placeNameInput = formEditProfileCard.elements['place-name'];
-const linkInput = formEditProfileCard.elements.link;
+const formAddCard = popupNewCard.querySelector('.popup__form');
+const placeNameInput = formAddCard.elements['place-name'];
+const linkInput = formAddCard.elements.link;
 
 // добавление карточки 
 function renderCard(cardData) {
@@ -60,7 +60,7 @@ buttonAdd.addEventListener('click', () => {
 // вызов функции закрытия попапа по клику
 setCloseModalByClickListeners(popups);
 
-formEditProfileCard.addEventListener('submit', handleEditProfileFormSubmitCard);
+formAddCard.addEventListener('submit', handleEditProfileFormSubmitCard);
 
 // вывод карточки на страницу 
 initialCards.forEach((item) => {
