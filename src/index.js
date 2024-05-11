@@ -1,6 +1,8 @@
 import { initialCards } from './components/cards.js';
 import { createCard, deleteCardItem, likeCard } from './components/card.js';
 import { openModal, closeModal, setCloseModalByClickListeners } from './components/modal.js';
+import { enableValidation, clearValidation } from './components/validation.js';
+import { getProfile, patchProfileInfo, postNewCard, patchNewAvatar, deleteCardRequest, } from './components/api.js';
 import './pages/index.css';
 
 // @todo: DOM узлы
@@ -22,6 +24,112 @@ function handleEditProfileFormSubmit(evt) {
   profileDescription.textContent = jobInput.value;
   closeModal(popupEdit);
 };
+
+// Конфиг для валидации полей   NEW!
+const configValidation = {
+  formSelector: '.popup__form',
+  inputSelector: '.popup__input',
+  submitButtonSelector: '.popup__button',
+  inactiveButtonClass: 'popup__button_disabled',
+  inputErrorClass: 'popup__input_type_error',
+  errorClass: 'popup__error_visible',
+};
+// Функция изменения имени и описания профиля в разметке  NEW!
+function handleFormSubmitProfile(evt) {
+  evt.preventDefault();
+  formElementProfile.elements.button.textContent = 'Сохранение...';
+  const obj = {
+    name: nameInput.value,
+    about: jobInput.value,
+  };
+  patchProfileInfo(obj)
+    .then((result) => {
+      changeProfileInfo(result);
+      closeModal(popupEdit);
+    })
+    .catch((err) => console.log(err))
+    .finally(() => {
+      formElementProfile.elements.button.textContent = 'Сохранить';
+    });
+};
+// Функция обработчик событий, которая возвращает обновленный аватар с сервера  NEW
+function handleFormProfileImg(evt) {
+  evt.preventDefault();
+  formNewAvatar.elements.button.textContent = 'Сохранение...';
+  const obj = {
+    avatar: inputLinkAvatar.value,
+  };
+  patchNewAvatar(obj).then((result) => {
+    changeProfileInfo(result);
+    formNewAvatar.elements.button.textContent = 'Сохранить';
+    closeModal(popupNewAvatar);
+  })
+  .finally(() => {
+    formNewAvatar.elements.button.textContent = 'Сохранить';
+  });
+};
+
+// Функция обработчик событий, которая возвращает новую карточку с сервера, полученную
+// из ответа на запрос с данными из формы     NEW!!!
+function handleFormSubmitCard(evt) {
+  evt.preventDefault();
+  formElementCard.elements.button.textContent = 'Сохранение...';
+  const obj = {
+    name: placeNameInput.value,
+    link: linkInput.value,
+  };
+  postNewCard(obj)
+    .then((result) => {
+      cardContainer.prepend(
+        createCard(result, deleteCard, likeCard, openImage, result.owner._id)
+      );
+      formElementCard.elements.button.textContent = 'Сохранить';
+      closeModal(popupNewCard);
+    })
+    .catch((err) => console.log(err))
+    .finally(() => {
+      formElementCard.elements.button.textContent = 'Сохранить';
+    });
+}
+  // Функция изменения данных профиля     NEW!!!
+const changeProfileInfo = (data) => {
+  profileTitle.textContent = data.name;
+  profileDescription.textContent = data.about;
+  profileImage.style.backgroundImage = `url(${data.avatar})`;
+};
+
+// Функция открывает попап и реализовывает логику установки попапу значения айди карточки,
+// а так же делает запрос и при успешном вызове вызывает метод удаления элемента карточки. NEW
+const deleteCard = (idCard, card) => {
+  openModal(popupDelete);
+  popupDelete.dataset.id = idCard;
+  popupDeleteButton.addEventListener(
+    'click',
+    () => {
+      deleteCardRequest(idCard)
+        .then((result) => {
+          if (result) {
+            deleteCardItem(idCard, card);
+            closeModal(popupDelete);
+          }
+        })
+        .catch((err) => console.log(err));
+    },
+    true
+  );
+};
+
+// Вызов функции запроса на сервер, в ответе которого получаем данные
+// карточек и профиля для рендеринга на странице  NEW!!!
+getProfile()
+  .then((result) => {
+    const [objProfile, arrCards] = result;
+    const idUser = objProfile._id;
+    changeProfileInfo(objProfile);
+    arrCards.forEach((el) => renderCard(el, idUser));
+  })
+  .catch((err) => console.log(err));
+
 // функция кнопки редактирования профиля 
 function handleEditButtonClick() {
   openModal(popupEdit);

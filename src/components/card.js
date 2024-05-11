@@ -1,4 +1,6 @@
 export {createCard, deleteCardItem, likeCard}
+import { putLikeCounterRequest, deleteLikeCounterRequest
+} from './api';
 // @todo: Темплейт карточки
 const cardTemplate = document.querySelector('#card-template').content;
 
