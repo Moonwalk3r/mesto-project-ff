@@ -36,16 +36,24 @@ const hasInvalidInput = (iputList) => {
 }
 
 //Отключение кнопки
+const disableSubmitButton = (button, config) => {
+  button.classList.add(config.inactiveButtonClass);
+  button.disabled = true;
+};
+
+const enableSubmitButton = (button, config) => {
+  button.classList.remove(config.inactiveButtonClass);
+  button.disabled = false;
+};
+
 const toggleButtonState = (inputList, buttonElement, formData) => {
   if (hasInvalidInput(inputList)) {
-    buttonElement.classList.add(formData.inactiveButtonClass);
-    buttonElement.disabled = true;
+    disableSubmitButton(buttonElement, formData);
+  } else {
+    enableSubmitButton(buttonElement, formData);
   }
-  else { 
-    buttonElement.classList.remove(formData.inactiveButtonClass);
-    buttonElement.disabled = false;
-  }
-}
+};
+
 //Событие ввода инпута
 const setEventListeners = (formElement, formData) => {
   const inputList = Array.from(formElement.querySelectorAll(formData.inputSelector));

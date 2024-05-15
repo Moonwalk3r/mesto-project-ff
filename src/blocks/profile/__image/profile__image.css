@@ -5,10 +5,34 @@
   -moz-border-radius: 50%;
   border-radius: 50%;
   background-size: cover;
-  /*Ковер тут симпатичнее контейна*/
   background-position: center;
   margin: 0 29px 0 0;
-  /*Макет очень кривоват, как считать этот отступ я хз. Проявите тут лояльность пока что*/
+  position: relative;
+  cursor: pointer;
+}
+
+.profile__image::after {
+  content: "";
+  display: block;
+  width: 24px;
+  height: 24px;
+  background-image: url("../../../images/edit-icon.svg");
+  background-size: cover;
+  background-position: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.profile__image:hover {
+  opacity: 0.6;
+}
+
+.profile__image:hover::after {
+  opacity: 1;
 }
 
 @media screen and (max-width: 740px) {
